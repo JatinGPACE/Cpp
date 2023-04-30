@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <conio.h>
+#include <string.h>
 using namespace std;
 
 int SIZE;
@@ -13,7 +14,7 @@ void printMenu();
 class info
 {
 private:
-    string accNo, name;
+    char accNo[100], name[100];
     float balance;
 
 public:
@@ -35,6 +36,7 @@ int main()
     do
     {
         cout << "Enter the number of customers you want to add : ";
+        fflush(stdin);
         cin >> SIZE;
         if (SIZE <= 0)
         {
@@ -61,6 +63,7 @@ int main()
         clrscr();
         printMenu();
         cout << "Enter your choice : ";
+        fflush(stdin);
         cin >> choice;
         switch (choice)
         {
@@ -153,14 +156,15 @@ void printMenu()
 void info ::getAccNo()
 {
     cout << "Enter the account number : ";
-    cin >> accNo;
+    fflush(stdin);
+    cin.getline(accNo, 100);
 }
 
 void info ::getName()
 {
     fflush(stdin);
     cout << "Enter the name : ";
-    getline(cin, name);
+    cin.getline(name, 100);
 }
 
 void info ::setBalance()
@@ -178,13 +182,13 @@ void info ::showData()
 int info ::searchAccount(info *customers)
 {
     int index;
-    string accountNumber;
+    char accountNumber[100];
     cout << "Enter the account number : ";
     fflush(stdin);
-    cin >> accountNumber;
+    cin.getline(accountNumber, 100);
     for (index = 0; index < SIZE; index++)
     {
-        if (accountNumber == customers[index].accNo)
+        if (strcmp(accountNumber, customers[index].accNo) == 0)
         {
             return index;
         }
@@ -204,6 +208,7 @@ void info ::depositAmount(info *customers)
     else
     {
         cout << "Enter the amount you want to deposit : ";
+        fflush(stdin);
         cin >> amount;
         customers[searchAccNumber].balance += amount;
         cout << "Money deposited successfully!" << endl;
@@ -212,9 +217,8 @@ void info ::depositAmount(info *customers)
 
 void info ::withdrawAmount(info *customers)
 {
-    int searchAccNumber;
+    int searchAccNumber = customers->searchAccount(customers);
     float amount;
-    searchAccNumber = customers->searchAccount(customers);
     if (searchAccNumber == -1)
     {
         cout << "Invlaid account number!" << endl;
@@ -222,6 +226,7 @@ void info ::withdrawAmount(info *customers)
     else
     {
         cout << "Enter the amount you want to withdraw : ";
+        fflush(stdin);
         cin >> amount;
         if (amount > customers[searchAccNumber].balance)
         {
@@ -238,25 +243,25 @@ void info ::withdrawAmount(info *customers)
 void info ::transferAmount(info *customers)
 {
     int index1, index2, flag1 = 0, flag2 = 0, flag3 = 0;
-    string accountFrom, accountTo;
+    char accountFrom[100], accountTo[100];
     float amount;
     do
     {
         cout << "Enter the account number from which you want to transfer the money : ";
         fflush(stdin);
-        cin >> accountFrom;
+        cin.getline(accountFrom, 100);
         for (index1 = 0; index1 < SIZE; index1++)
         {
-            if (accountFrom == customers[index1].accNo)
+            if (strcmp(accountFrom, customers[index1].accNo) == 0)
             {
                 do
                 {
                     cout << "Enter the account number in which you want to transfer the money : ";
                     fflush(stdin);
-                    cin >> accountTo;
+                    cin.getline(accountTo, 100);
                     for (index2 = 0; index2 < SIZE; index2++)
                     {
-                        if (accountTo == customers[index2].accNo)
+                        if (strcmp(accountTo, customers[index2].accNo) == 0)
                         {
                             if (accountTo == accountFrom)
                             {
@@ -301,7 +306,7 @@ void info ::transferAmount(info *customers)
 void info ::editInfo(info *customers)
 {
     int searchAccNo = searchAccount(customers), choice;
-    string newAccNo, newName;
+    char newAccNo[100], newName[100];
     if (searchAccNo == -1)
     {
         cout << "Invlaid account number!" << endl;
@@ -314,21 +319,23 @@ void info ::editInfo(info *customers)
             cout << "Press 1 to edit account number." << endl;
             cout << "Press 2 to edit name." << endl;
             cout << "Enter your choice : ";
+            fflush(stdin);
             cin >> choice;
             switch (choice)
             {
             case 1:
                 cout << "Enter the new account number : ";
-                cin >> newAccNo;
-                customers[searchAccNo].accNo = newAccNo;
+                fflush(stdin);
+                cin.getline(newAccNo, 100);
+                strcpy(customers[searchAccNo].accNo, newAccNo);
                 cout << "Information edited successfully!" << endl;
                 break;
 
             case 2:
                 cout << "Enter the new name : ";
                 fflush(stdin);
-                getline(cin, newName);
-                customers[searchAccNo].name = newName;
+                cin.getline(newName, 100);
+                strcpy(customers[searchAccNo].name, newName);
                 cout << "Information edited successfully!" << endl;
                 break;
 
